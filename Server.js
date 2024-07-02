@@ -3,6 +3,8 @@ process.on('uncaughtException',(err)=>{
     console.log("Uncaught Exception Catched!",err)
 })
 
+import bodyParser from 'body-parser';
+
 import express  from "express";
 import connectionDB from "./DataBase/DBconnection.js";
 import bootstrap from "./src/modules/index.routes.js";
@@ -15,6 +17,13 @@ import dotenv from "dotenv" //this module use in cover for the secret key
 const port =3000
 const app = express()
 dotenv.config()
+
+
+app.use(cors())
+
+
+app.use(bodyParser.json());
+
 
 cloudinary.config({
     cloud_name: 'dng4ptcp4',
@@ -55,7 +64,7 @@ app.use('*',(req,res,next)=>{
 })
 
 
-app.listen(port , () => {
+app.listen(process.env.PORT ||port , () => {
     console.log(`Server is running on port $${port}` )}
     )
 
