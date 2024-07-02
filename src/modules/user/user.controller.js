@@ -29,7 +29,7 @@ const getAllUser =catchError(async(req,res,next)=>{
 
 const getSingleUser =catchError(
     async(req,res,next)=>{ 
-        let user =await userModel.findById(req.params.id) 
+        let user =await userModel.findById(req.params.id).populate("corses") 
         !user && res.status(400).json({message:"user not found"})
         user && res.json({message:"success",user:user})
     

@@ -3,6 +3,8 @@ import { catchError } from "../../middleware/catchError.js";
 import cloudinary from "cloudinary"
 import { coursesModel } from "../../../DataBase/models/courses.model.js";
 import { deleteOne } from "../handlers/handlers.js";
+import Stripe from 'stripe';
+const stripe = new Stripe('sk_test_51P2lleF7DMF7Cu0m6dMOzdYJLVmia81ABlZ06E7jwbGmLI6m2Vc5Y0fCfbxu2Uy6wsVLubWjxPrxt0BVQ03msi5w00XU3t8UUD');
 
 
 const addCours =catchError(async (req,res,next)=>{
@@ -64,12 +66,59 @@ const updateCours =catchError(async(req,res,next)=>{
 
 )
 
-
 const deleteCours=deleteOne(coursesModel)
+
+
+
+
+
+const createChickOutSession =catchError(async(req,res,next)=>{ 
+
+    let corse = await coursesModel.findById(req.params.id)
+    if(!corse) {return next(new AppError("corse not found"),404)};
+
+    // total price
+    let totalOrderPrice = corse.price 
+
+
+    let session = await stripe.checkout.sessions.create({
+
+        line_items:[
+            {
+                    price_data:{
+                        currency:'EGP',
+                        unit_amount: totalOrderPrice * 100,
+                        product_data:{
+                            name:req.user.name ,
+                        }
+                    },
+                    quantity:1,
+            }
+        ],
+        mode:'payment',
+        success_url:'https://final-pro-api-j1v7.onrender.com/api/v1/product',
+        cancel_url:'https://final-pro-api-j1v7.onrender.com/api/v1/order',
+        customer_email:req.user.email,
+        client_reference_id:req.params.id,
+        // metadata:req.body.userAddress,
+    })
+
+    res.json( {message:'success', session:session} )
+
+
+}
+
+)
+
 export{
     addCours,
     getallCours,
     getSinglCoures,
     updateCours,
-    deleteCours
+    deleteCours,
+    createChickOutSession,
+    // createOnlaineOrder
 }
+
+
+

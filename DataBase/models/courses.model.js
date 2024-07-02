@@ -26,6 +26,15 @@ const schema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref:"user",
     },
+    price:{
+        type:Number,
+        min:0,
+        },
+        userAddress:{
+            street:String,
+            city:String,
+            phone:String
+        },
 
 }, { timestamps: true , toJSON:{virtuals:true} })
 

@@ -40,12 +40,6 @@ const schema = new mongoose.Schema({
         lowercase:true
     },
     passwordChangedAt:Date,
-    wishlist: [
-        {
-            type: mongoose.Types.ObjectId,
-            ref:"product"
-        }
-    ],
     addresses: [
         {  
             stret:String,
@@ -56,9 +50,15 @@ const schema = new mongoose.Schema({
 ],
 passwordResetToken:String,
 resetCode:String,
-passwordResetTokenEsxpire:Date 
+passwordResetTokenEsxpire:Date ,
+corses:[
+    {
+        type:mongoose.Types.ObjectId,
+        ref:"cours"
+    }
+]
 
-}, { timestamps: true })
+}, { timestamps: true ,toJSON:{virtuals:true} })
 
 
 
@@ -79,6 +79,18 @@ schema.pre('findOneAndUpdate',function(){
 
 
 
+// virtual populate for All review in the product 
+// schema.virtual('cors',{
+//     ref:'cours',
+//     localField:"_id",
+//     foreignField:'coursId'
+// })
+
+// schema.pre("findOne",function(){
+
+//     this.populate('cors')
+    
+// })
 
 
 
