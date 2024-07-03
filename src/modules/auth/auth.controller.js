@@ -16,7 +16,7 @@ const signup =catchError( async( req ,res,next )=>{
 
         let user =new userModel(req.body)
         await user.save()
-        const token = jwt.sign({userId:user._id,role:user.role},process.env.JWT_KEY)
+        const token = jwt.sign({userId:user._id,role:user.role},"lessson")
 
         return res.json({message:"success",token})
     
@@ -30,11 +30,12 @@ const signin =catchError(async ( req ,res,next )=>{
 
     const user =await userModel.findOne({email:req.body.email})
     if(user  && bcrypt.compareSync(req.body.password ,user.password)){
-        const token = jwt.sign({userId:user._id,role:user.role},process.env.JWT_KEY)
+        const token = jwt.sign({userId:user._id,role:user.role},"lessson")
         return res.json({message:"success" ,token})
     }
     next(new AppError(`incorect email or password`,401))
 })
+
 
 
 // changePassword
@@ -43,7 +44,7 @@ const changePassword =catchError(async ( req ,res,next )=>{
 
     if(user  && bcrypt.compareSync(req.body.password ,user.password))
     {
-        let token = jwt.sign({userId:user._id,role:user.role},process.env.JWT_KEY)
+        let token = jwt.sign({userId:user._id,role:user.role},"lessson")
         await userModel.findByIdAndUpdate(req.user._id,{password :req.body.newPassword ,passwordChangedAt:Date.now()})
         return res.json({message:"success" ,token})
     }
@@ -63,7 +64,7 @@ const protectedRoutes =catchError(async ( req ,res,next )=>{
 
 
     // verify token
-    let decoded = jwt.verify(token , process.env.JWT_KEY)
+    let decoded = jwt.verify(token , "lessson")
 
 
     //  check if the user still exists / if user chandge password delete old token and create new token
