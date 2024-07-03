@@ -11,7 +11,7 @@ const coursRouter = express.Router()
 
 coursRouter
     .route('/')
-.post(protectedRoutes,allwoedTo('admin'),uploadSingleFile('file'),validation(coursVal),addCours)
+.post(protectedRoutes,allwoedTo('admin'),uploadSingleFile('file'),addCours)
 .get(protectedRoutes,getallCours)
 
 coursRouter

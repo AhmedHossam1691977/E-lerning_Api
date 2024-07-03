@@ -19,7 +19,7 @@ const addCours =catchError(async (req,res,next)=>{
 
     const result = await cloudinary.uploader.upload(filePath, {});
     req.body.image = result.url 
-
+    // console.log(result.url);
     
     const cours = new coursesModel(req.body)
     cours.dateOfCours=Date.now() + 10 * 60 * 1000
@@ -100,7 +100,7 @@ const createChickOutSession =catchError(async(req,res,next)=>{
         cancel_url:'https://final-pro-api-j1v7.onrender.com/api/v1/order',
         customer_email:req.user.email,
         client_reference_id:req.params.id,
-        // metadata:req.body.userAddress,
+        metadata:req.body.userAddress,
     })
 
     res.json( {message:'success', session:session} )
