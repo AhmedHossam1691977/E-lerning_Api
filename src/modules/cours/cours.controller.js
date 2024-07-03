@@ -16,7 +16,7 @@ const addCours =catchError(async (req,res,next)=>{
           req.body.slug=slugify(`${req.body.name}`);
 
     const filePath = req.file.path;
-
+        console.log(filePath);
     const result = await cloudinary.uploader.upload(filePath, {});
     req.body.image = result.url 
     // console.log(result.url);

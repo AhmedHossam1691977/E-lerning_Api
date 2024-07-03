@@ -6,7 +6,7 @@ import { AppError } from "../../utils/appError.js";
 export const fileUpload = () => {
     const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "uploads/");
+        cb(null, "/uploads/");
     },
     filename: (req, file, cb) => {
         cb(null, new mongoose.Types.ObjectId() + "-" + file.originalname);
