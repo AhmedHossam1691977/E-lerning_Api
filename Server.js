@@ -53,7 +53,9 @@ app.use(globalError)
 
 
 
-
+app.get('/', async (req, res) => {
+ res.send('Hello World!')
+  });
 
 
 
