@@ -35,6 +35,10 @@ const schema = new mongoose.Schema({
             city:String,
             phone:String
         },
+        numberOfPayed:{
+            type:Number,
+            min:0,
+            },
 
 }, { timestamps: true , toJSON:{virtuals:true} })
 

@@ -141,7 +141,7 @@ const VerifyResetCode =catchError(async ( req ,res,next )=>{
 const resetPassword =catchError(async ( req ,res,next )=>{
 
     const user =await userModel.findOne({email:req.body.email});
-
+    console.log(user);
     if(!user) return next(new AppError('There is no account with provided email address ' ,404))
 
     if(user.resetCode == undefined) return next(new AppError('There is no account with provided email address ' ,404)) 
