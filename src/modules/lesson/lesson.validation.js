@@ -13,7 +13,7 @@ const lessonVal =Joi.object({
         originalname: Joi.string().required(),
         encoding: Joi.string().required(),
         mimetype: Joi.string().valid('video/mp4', 'video/webm', 'video/ogg').required(),
-        size: Joi.number().max(52428800).required(), // الحجم الأقصى 50 ميجابايت
+        size: Joi.number().max(2147483648).required(), // الحجم الأقصى 2 جيجا
         destination: Joi.string().required(),
         filename: Joi.string().required(),
         path: Joi.string().required()

@@ -3,32 +3,39 @@ import { catchError } from "../../middleware/catchError.js";
 import { v2 as cloudinaryV2} from "cloudinary"
 import { deleteOne } from "../handlers/handlers.js";
 import { lessonModel } from "../../../DataBase/models/lessons.model.js";
+import { uploadToFTP } from "../../services/ftb.js";
+import path from "path";
 
 
-const addLesson =catchError(async (req,res,next)=>{
+const addLesson = catchError(async (req, res, next) => {
+    const nweLesson = await lessonModel.findOne({ title: req.body.name });
 
-    const nweLesson = await lessonModel.findOne({title:req.body.name})
-    if(nweLesson){
-        return res.status(400).json({message:"lesson alredy found"})
-    }else{
-            req.body.slug=slugify(`${req.body.title}`);
+    if (nweLesson) {
+        return res.status(400).json({ message: "Lesson already found" });
+    } else {
+        req.body.slug = slugify(`${req.body.title}`);
 
+        // تعديل اسم الفيديو إذا كان يحتوي على فراغات
+        let videoName = req.file.originalname.replace(/\s+/g, "_");  // استبدال الفراغات بـ "_"
 
-    const filePath = req.file.path;
-        const result = await cloudinaryV2.uploader.upload(filePath, {
-            resource_type: "auto" 
-        });
+        const filePath = req.file.path;
+        const remoteFileName = `${Date.now()}-${videoName}`;  // استخدام الاسم المعدل
 
-    console.log(result.url);
-        req.body.video = result.url
+        await uploadToFTP(filePath, remoteFileName);
 
-    const lesson = new lessonModel(req.body)
-    lesson.dateOflesson=Date.now() + 10 * 60 * 1000
-    await  lesson.save()
-    res.json({message:"success",lesson:lesson})
+        const remoteFilePath = path
+            .join(process.env.FTP_BASE_PATH, remoteFileName)
+            .replace(/\\/g, "/");
+
+        req.body.video = `https://${remoteFilePath}`;
+
+        const lesson = new lessonModel(req.body);
+        lesson.dateOflesson = Date.now() + 10 * 60 * 1000;  // تحديد وقت الدرس
+        await lesson.save();
+
+        res.json({ message: "success", lesson: lesson });
     }
-
-})
+});
 
 
 const getallLesson =catchError(async (req,res,next)=>{
@@ -52,11 +59,21 @@ const getSinglLesson =catchError(async (req,res,next)=>{
 const updateLesson =catchError(async(req,res,next)=>{ 
     if(req.body.name) req.body.slug=slugify(req.body.name)
     if(req.file){
+    
+        let videoName = req.file.originalname.replace(/\s+/g, "_");  // استبدال الفراغات بـ "_"
+
         const filePath = req.file.path;
-        const result = await cloudinaryV2.uploader.upload(filePath, {
-            resource_type: "auto" 
-        });
-        req.body.video = result.url 
+        const remoteFileName = `${Date.now()}-${videoName}`;  // استخدام الاسم المعدل
+
+        await uploadToFTP(filePath, remoteFileName);
+
+        const remoteFilePath = path
+            .join(process.env.FTP_BASE_PATH, remoteFileName)
+            .replace(/\\/g, "/");
+
+        req.body.video = `https://${remoteFilePath}`;
+
+
     }
 
     let lesson =await lessonModel.findByIdAndUpdate(req.params.id,req.body,{new:true})  

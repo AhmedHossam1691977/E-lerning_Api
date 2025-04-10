@@ -12,7 +12,7 @@ const lessonRouter = express.Router()
 
 lessonRouter
     .route('/')
-.post(protectedRoutes,allwoedTo('admin'),uploadSingleFile('file'),validation(lessonVal),addLesson)
+.post(protectedRoutes,allwoedTo('admin'),uploadSingleFile('video'),validation(lessonVal),addLesson)
 .get(protectedRoutes,getallLesson)
 
 lessonRouter

@@ -11,14 +11,14 @@ const userRouter = express.Router()
 
 userRouter
     .route('/')
-.post(protectedRoutes,validation(addUserSchemaVal),chickEmail,addUser)
-.get(getAllUser)
+.post(protectedRoutes,allwoedTo('admin'),validation(addUserSchemaVal),chickEmail,addUser)
+.get(protectedRoutes,allwoedTo('admin'),getAllUser)
 
 
 
 userRouter   
 .route('/:id')
-.get(validation(paramsIdVal),getSingleUser)
+.get(protectedRoutes,allwoedTo('admin'),validation(paramsIdVal),getSingleUser)
 .put(protectedRoutes,allwoedTo('admin'),validation(updateUserSchemaVal),updateUser)
 .delete(protectedRoutes,allwoedTo('admin'),validation(paramsIdVal),deleteUser)
 

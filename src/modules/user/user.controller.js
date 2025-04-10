@@ -9,7 +9,7 @@ const addUser = catchError(async (req,res,next)=>{
 
     const user = new userModel(req.body)
     await  user.save()
-    res.json({message:"success",user:{name:user.name,email:user.email}})
+    res.json({message:"success",user:{name:user.name,id:user._id}})
 
 })
 
