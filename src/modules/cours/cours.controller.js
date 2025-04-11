@@ -129,7 +129,7 @@ const creatOnlineCours = catchError( (request, response) => {
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(request.body, sig, "whsec_WOgOgQFq3GWA4kZc50ZGdjqw8HpC4IO6");
   } catch (err) {
     response.status(400).send(`Webhook Error: ${err.message}`);
     return;
