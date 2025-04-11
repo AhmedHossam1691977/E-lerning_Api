@@ -118,31 +118,40 @@ const createChickOutSession = catchError(async (req, res, next) => {
     });
   
     res.status(200).json({ message: "success", url: session });
+
   });
   
 
 
-  const onlineCorsss = catchError((req, res) => {
-
+  const onlineCorsss = catchError(async(req, res) => {
     const sig = req.headers['stripe-signature'];
-
-  let event;
-
-  try {
-    event = Stripe.webhooks.constructEvent(req.body, sig, "whsec_WOgOgQFq3GWA4kZc50ZGdjqw8HpC4IO6");
-  } catch (err) {
-    res.status(400).send(`Webhook Error: ${err.message}`);
-    return;
-  }
-
-  if(event.type ==='checkout.session.completed'){
-     const checkoutSessionCompleted = event.data.object;
-     console.log("success",checkoutSessionCompleted);
-     
-  }else{
-    console.log(`Unhandled event type ${event.type}`);
-  }
-  res.json( { message:"succes" });
+    let event;
+  
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+      console.error('Webhook signature verification failed.', err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+  
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+  
+      const coursId = session.metadata.coursId;
+      const userId = session.metadata.userId;
+  
+      // سجل عملية الشراء هنا
+      await EnrollModel.create({
+        user: userId,
+        course: coursId,
+        paymentStatus: 'paid',
+        stripeSessionId: session.id,
+      });
+  
+      console.log(`✅ User ${userId} paid for course ${coursId}`);
+    }
+  
+    res.status(200).json({ received: true });
 
       })
 
@@ -155,7 +164,7 @@ export{
     updateCours,
     deleteCours,
     createChickOutSession,
-    
+    onlineCorsss
 }
 
 

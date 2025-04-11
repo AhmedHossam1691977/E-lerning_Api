@@ -14,6 +14,7 @@ import { globalError } from "./src/middleware/globalError.js";
 
 import dotenv from "dotenv" //this module use in cover for the secret key
 import Stripe from 'stripe';
+import { onlineCorsss } from './src/modules/cours/cours.controller.js';
 // import { creatOnlineCours } from './src/modules/cours/cours.controller.js';
 
 
@@ -23,7 +24,7 @@ const port =3000
 dotenv.config()
 app.use(bodyParser.json());
 app.use(express.raw({type: 'application/json'}))
-app.post('/webhook',);
+app.post('/webhook',onlineCorsss);
 
 app.use(cors())
 app.use(express.json())
