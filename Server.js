@@ -19,12 +19,12 @@ import { creatOnlineCours } from './src/modules/cours/cours.controller.js';
 
 const app = express()
 const port =3000
-app.post('/webhook', express.raw({type: 'application/json'}), creatOnlineCours);
 dotenv.config()
-app.use(cors())
 app.use(bodyParser.json());
-app.use(express.json())
+app.post('/webhook', express.raw({type: 'application/json'}), creatOnlineCours);
+
 app.use(cors())
+app.use(express.json())
 
 
 
