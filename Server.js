@@ -11,38 +11,26 @@ import bootstrap from "./src/modules/index.routes.js";
 import cors from "cors"
 import { AppError } from "./src/utils/appError.js";
 import { globalError } from "./src/middleware/globalError.js";
-import cloudinary from "cloudinary"
 
 import dotenv from "dotenv" //this module use in cover for the secret key
-const port =3000
+import { creatOnlineCours } from './src/modules/cours/cours.controller.js';
+
+
+
 const app = express()
+const port =3000
+app.post('/webhook', express.raw({type: 'application/json'}), creatOnlineCours);
 dotenv.config()
-
-
+app.use(cors())
+app.use(bodyParser.json());
+app.use(express.json())
 app.use(cors())
 
 
-app.use(bodyParser.json());
-
-
-cloudinary.config({
-    cloud_name: 'dng4ptcp4',
-    api_key: '357773728746287',
-    api_secret: 'S4gWUpw5KOQoPXb-jHuSTkGb_JQ',
-  });
 
 
 
 
-
-
-
-app.use(express.json())
-
-
-// cloud_name: 'ds7tnriwu',
-// api_key: '295178979832949',
-// api_secret: 'My_TncfvycIIV7-pi8jDR2d7tEY',
 
 
 bootstrap(app)

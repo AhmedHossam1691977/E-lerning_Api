@@ -3,40 +3,47 @@ import { catchError } from "../../middleware/catchError.js";
 import cloudinary from "cloudinary"
 import { coursesModel } from "../../../DataBase/models/courses.model.js";
 import { deleteOne } from "../handlers/handlers.js";
-import Stripe from 'stripe';
 import { uploadToFTP } from "../../services/ftb.js";
-// const stripe = new Stripe('sk_test_51P2lleF7DMF7Cu0m6dMOzdYJLVmia81ABlZ06E7jwbGmLI6m2Vc5Y0fCfbxu2Uy6wsVLubWjxPrxt0BVQ03msi5w00XU3t8UUD');
 import path from "path";
+import Stripe from 'stripe';
+const stripe = new Stripe('sk_test_51P2lleF7DMF7Cu0m6dMOzdYJLVmia81ABlZ06E7jwbGmLI6m2Vc5Y0fCfbxu2Uy6wsVLubWjxPrxt0BVQ03msi5w00XU3t8UUD');
 
-
-const addCours =catchError(async (req,res,next)=>{
-
-    const nweCours = await coursesModel.findOne({name:req.body.name})
-    if(nweCours){
-        return res.status(400).json({message:"cours alredy found"})
-    }else{
-            req.body.slug=slugify(`${req.body.name}`);
-
-    const filePath = req.file.path;
-        console.log(filePath);
-
-        const remoteFileName = `${Date.now()}-${req.file.originalname}`;
-        await uploadToFTP(filePath, remoteFileName);
-        const remoteFilePath = path
-        .join(process.env.FTP_BASE_PATH, remoteFileName)
-        .replace(/\\/g, "/");
-      req.body.image = `https://${remoteFilePath}`;
-    
-   
-    
-    const cours = new coursesModel(req.body)
-    cours.dateOfCours=Date.now() + 10 * 60 * 1000
-    await  cours.save()
-    res.json({message:"success",cours:cours})
+const addCours = catchError(async (req, res, next) => {
+    const existingCours = await coursesModel.findOne({ name: req.body.name });
+    if (existingCours) {
+      return res.status(400).json({ message: "cours already found" });
     }
-
-})
-
+  
+    req.body.slug = slugify(`${req.body.name}`);
+  
+    // Check if file exists and clean file name
+    if (req.file && req.file.originalname) {
+      // Replace spaces and unsafe characters with hyphens
+      const cleanFileName = `${Date.now()}-${req.file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '-')}`;
+      
+      const filePath = req.file.path;
+      console.log(filePath);
+  
+      await uploadToFTP(filePath, cleanFileName);
+  
+      const remoteFilePath = path
+        .join(process.env.FTP_BASE_PATH, cleanFileName)
+        .replace(/\\/g, "/");
+  
+      // Add full URL to the image
+      req.body.image = `https://${remoteFilePath}`;
+    } else {
+      // Set a default image or placeholder if no image was uploaded
+      req.body.image = "https://yourdomain.com/default-image.png";
+    }
+  
+    const cours = new coursesModel(req.body);
+    cours.dateOfCours = Date.now() + 10 * 60 * 1000;
+    await cours.save();
+  
+    res.json({ message: "success", cours });
+  });
+  
 
 const getallCours =catchError(async (req,res,next)=>{
     const cours = await coursesModel.find()
@@ -83,10 +90,58 @@ const updateCours =catchError(async(req,res,next)=>{
 const deleteCours=deleteOne(coursesModel)
 
 
+const createChickOutSession = catchError(async (req, res, next) => {
+    const cours = await coursesModel.findById(req.params.id);
+    if (!cours) return res.status(400).json({ message: "cours not found" });
+  
+    let session = await stripe.checkout.sessions.create({
+      line_items: [{
+        price_data: {
+          currency: 'EGP',
+          unit_amount: cours.price * 100,
+          product_data: {
+            name: cours.name,
+          },
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: `${process.env.BASE_URL}/api/v1/cours/${cours._id}`,
+      cancel_url: `${process.env.BASE_URL}/api/v1/cours`,
+      customer_email: req.user.email,
+      client_reference_id: cours._id.toString(),
+      metadata: {
+        coursId: cours._id.toString(),
+        userId: req.user._id.toString(),
+      },
+    });
+  
+    res.status(200).json({ message: "success", url: session.url });
+  });
+  
 
 
+const creatOnlineCours = catchError( (request, response) => {
+        const sig = request.headers['stripe-signature'].toString();
+      
+        let event;
+      
+        try {
+          event = stripe.webhooks.constructEvent(request.body, sig, 'whsec_d3Z9Ws5i9u7xVeqRi5pMoM3PcBUSpIsO');
+        } catch (err) {
 
+    return response.status(400).send(`Webhook Error: ${err.message}`);
+        }
+        if (event.type === 'checkout.session.completed') {
+          const checkoutSessionCompleted = event.data.object;
+          console.log('Payment was successful!');
 
+        }else{
+             console.log(`Unhandled event type ${event.type}`);
+        }
+       
+      }
+  );
 
 export{
     addCours,
@@ -94,7 +149,10 @@ export{
     getSinglCoures,
     updateCours,
     deleteCours,
+    createChickOutSession,
+    creatOnlineCours,
 }
+
 
 
 
