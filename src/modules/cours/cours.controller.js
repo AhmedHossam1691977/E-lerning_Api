@@ -123,37 +123,35 @@ const createChickOutSession = catchError(async (req, res, next) => {
   
 
 
-  const onlineCorsss = ((req, res) => {
+  const onlineCorsss = catchError((req, res) => {
     const sig = req.headers['stripe-signature'];
   
-  let event;
-
-  try {
-    event = Stripe.webhooks.constructEvent(
-      req.body, 
-      sig, 
-      "whsec_nsttgrnDILHoYGv069mh7iXf20ZlFwaU"
-    );
-  } catch (err) {
-    console.error(`Webhook Error: ${err.message}`);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-
-  // Handle the event
-  switch (event.type) {
-    case 'checkout.session.completed':
-      const checkoutSessionCompleted = event.data.object;
-      console.log("Checkout session completed:", checkoutSessionCompleted);
-      break;
-    // يمكنك إضافة أنواع أخرى من الأحداث هنا
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
-
-  // إرجاع response لإعلام Stripe أنك استلمت الحدث بنجاح
-  res.json({received: true});
+    let event;
+  
+    try {
+      event = Stripe.webhooks.constructEvent(
+        req.body, 
+        sig, 
+        "whsec_nsttgrnDILHoYGv069mh7iXf20ZlFwaU"
+      );
+    } catch (err) {
+      console.error(`Webhook Error: ${err.message}`);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+    // Handle the event
+    if(event.type ==='checkout.session.completed'){
+        const checkoutSessionCompleted = event.data.object;
+       
+        console.log("success",checkoutSessionCompleted);
+    }else{
+        console.log(`Unhandled event type ${event.type}`);
+    }
+  
+    res.json( { message:"succes" });
   
   })
+
+
 
 
 
