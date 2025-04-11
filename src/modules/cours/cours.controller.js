@@ -123,7 +123,7 @@ const createChickOutSession = catchError(async (req, res, next) => {
   
 
 
-  const onlineCorsss = catchError((req, res) => {
+  const onlineCorsss = ((req, res) => {
     const sig = req.headers['stripe-signature'];
   
     let event;
