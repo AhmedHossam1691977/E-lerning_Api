@@ -23,8 +23,36 @@ const app = express()
 const port =3000
 dotenv.config()
 app.use(bodyParser.json());
-// app.use(express.raw({type: 'application/json'}))
-app.post('/webhook',express.raw({type: 'application/json'}),onlineCorsss);
+
+app.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
+  const sig = request.headers['stripe-signature'];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+  } catch (err) {
+    response.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+
+  // Handle the event
+  switch (event.type) {
+    case 'checkout.session.completed':
+      const checkoutSessionCompleted = event.data.object;
+      // Then define and call a function to handle the event checkout.session.completed
+      console.log("success",checkoutSessionCompleted);
+      
+      break;
+    // ... handle other event types
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  // Return a 200 response to acknowledge receipt of the event
+  response.send();
+});
+
 
 app.use(cors())
 app.use(express.json())
