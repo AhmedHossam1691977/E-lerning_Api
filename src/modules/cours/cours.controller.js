@@ -123,14 +123,14 @@ const createChickOutSession = catchError(async (req, res, next) => {
 
 
 const creatOnlineCours = catchError( (request, response) => {
-    const sig = req.headers['stripe-signature'];
+    const sig = request.headers['stripe-signature'];
 
     let event;
 
     try {
-        event = stripe.webhooks.constructEvent(req.body, sig, "whsec_voC4fe3vHk8cKuNEwS2z9MKIMIqZPauW");
+        event = stripe.webhooks.constructEvent(request.body, sig, "whsec_voC4fe3vHk8cKuNEwS2z9MKIMIqZPauW");
     } catch (err) {
-        res.status(400).send(`Webhook Error: ${err.message}`);
+        response.status(400).send(`Webhook Error: ${err.message}`);
         return;
     }
 
@@ -143,7 +143,7 @@ const creatOnlineCours = catchError( (request, response) => {
         console.log(`Unhandled event type ${event.type}`);
     }
 
-    res.json( { message:"succes" });
+    response.json( { message:"succes" });
        
       }
   );
