@@ -23,29 +23,7 @@ const port =3000
 dotenv.config()
 app.use(bodyParser.json());
 app.use(express.raw({type: 'application/json'}))
-app.post('/webhook',(req, res) => {
-
-    const sig = req.headers['stripe-signature'];
-
-  let event;
-
-  try {
-    event = Stripe.webhooks.constructEvent(req.body, sig, "whsec_WOgOgQFq3GWA4kZc50ZGdjqw8HpC4IO6");
-  } catch (err) {
-    res.status(400).send(`Webhook Error: ${err.message}`);
-    return;
-  }
-
-  if(event.type ==='checkout.session.completed'){
-     const checkoutSessionCompleted = event.data.object;
-     console.log("success",checkoutSessionCompleted);
-     
-  }else{
-    console.log(`Unhandled event type ${event.type}`);
-  }
-  res.json( { message:"succes" });
-
-      });
+app.post('/webhook',);
 
 app.use(cors())
 app.use(express.json())
