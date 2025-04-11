@@ -122,33 +122,32 @@ const createChickOutSession = catchError(async (req, res, next) => {
   
 
 
-  const creatOnlineCours = catchError((request, response) => {
-    const sig = request.headers['stripe-signature']?.toString();
-    if (!sig) return response.status(400).send("Missing Stripe Signature");
-  
+const creatOnlineCours = catchError( (request, response) => {
+    const sig = req.headers['stripe-signature'];
+
     let event;
-  
+
     try {
-      event = stripe.webhooks.constructEvent(
-        request.body,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET 
-      );
+        event = stripe.webhooks.constructEvent(req.body, sig, "whsec_voC4fe3vHk8cKuNEwS2z9MKIMIqZPauW");
     } catch (err) {
-      return response.status(400).send(`Webhook Error: ${err.message}`);
+        res.status(400).send(`Webhook Error: ${err.message}`);
+        return;
     }
-  
-    if (event.type === 'checkout.session.completed') {
-      const checkoutSession = event.data.object;
-      console.log('✅ Payment was successful!' ,event.data.object);
-      // تقدر هنا تسجل في قاعدة البيانات أو تبعت إيميل، إلخ
-    } else {
-      console.log(`Unhandled event type ${event.type}`);
+
+    // Handle the event
+    if(event.type ==='checkout.session.completed'){
+        const checkoutSessionCompleted = event.data.object;
+        // card(checkoutSessionCompleted)
+        console.log("success",event.data.object);
+    }else{
+        console.log(`Unhandled event type ${event.type}`);
     }
-  
-    response.status(200).json({ received: true });
-  });
-  
+
+    res.json( { message:"succes" });
+       
+      }
+  );
+
 export{
     addCours,
     getallCours,
