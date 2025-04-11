@@ -14,15 +14,38 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// ✅ لازم ييجي قبل أي parser
-app.post('/webhook', express.raw({ type: 'application/json' }), onlineCorsss);
 
-// ✅ بعد كده parser
+app.post('/webhook', bodyParser.raw({ type: 'application/json' }), (req, res) => {
+  const sig = req.headers['stripe-signature'];
+
+  let event;
+
+  try {
+      event = Stripe.webhooks.constructEvent(req.body, sig, "whsec_nsttgrnDILHoYGv069mh7iXf20ZlFwaU");
+  } catch (err) {
+      res.status(400).send(`Webhook Error: ${err.message}`);
+      return;
+  }
+
+  // Handle the event
+  if(event.type ==='checkout.session.completed'){
+      const checkoutSessionCompleted = event.data.object;
+     
+      console.log("success",checkoutSessionCompleted);
+  }else{
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  res.json( { message:"succes" });
+
+});
+
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
-// باقي الإعدادات
+
 bootstrap(app);
 connectionDB();
 
@@ -30,7 +53,7 @@ app.get('', (req, res) => {
   res.send('Hello World!');
 });
 
-// Error handling
+
 app.use(globalError);
 app.use('*', (req, res, next) => {
   next(new AppError(`not found endpoint ${req.originalUrl}`, 404));
@@ -40,6 +63,6 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-// Global error handlers
+
 process.on('uncaughtException', err => console.log("Uncaught Exception Catched!", err));
 process.on('unhandledRejection', err => console.log(err));
