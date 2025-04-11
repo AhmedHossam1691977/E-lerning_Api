@@ -6,6 +6,7 @@ import { deleteOne } from "../handlers/handlers.js";
 import { uploadToFTP } from "../../services/ftb.js";
 import path from "path";
 import Stripe from 'stripe';
+import { userModel } from "../../../DataBase/models/user.model.js";
 const stripe = new Stripe('sk_test_51P2lleF7DMF7Cu0m6dMOzdYJLVmia81ABlZ06E7jwbGmLI6m2Vc5Y0fCfbxu2Uy6wsVLubWjxPrxt0BVQ03msi5w00XU3t8UUD');
 
 const addCours = catchError(async (req, res, next) => {
@@ -134,7 +135,8 @@ const creatOnlineCours = catchError( (request, response) => {
         }
         if (event.type === 'checkout.session.completed') {
           const checkoutSessionCompleted = event.data.object;
-          console.log('Payment was successful!');
+        //   corsss(checkoutSessionCompleted);
+          console.log('Payment was successful!',event.data.object);
 
         }else{
              console.log(`Unhandled event type ${event.type}`);
@@ -154,5 +156,20 @@ export{
 }
 
 
+async function corsss(e) {
 
+    const cours = await coursesModel.findById(e.client_reference_id);
+    if (!cours) return res.status(400).json({ message: "cours not found" });
+    cours.payPy = e.customer_email;
+    
+   cours.save()
 
+    const user = await userModel.findById(e.metadata.userId);
+    if (!user) return res.status(400).json({ message: "user not found" });
+
+    user.corses = e.client_reference_id
+
+    user.save()
+
+    return next()
+}

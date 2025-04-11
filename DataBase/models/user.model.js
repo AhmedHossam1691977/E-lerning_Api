@@ -40,14 +40,14 @@ const schema = new mongoose.Schema({
         lowercase:true
     },
     passwordChangedAt:Date,
-    addresses: [
-        {  
-            stret:String,
-            phone:String,
-            city:String,
-        }
+//     addresses: [
+//         {  
+//             stret:String,
+//             phone:String,
+//             city:String,
+//         }
         
-],
+// ],
 passwordResetToken:String,
 resetCode:String,
 passwordResetTokenEsxpire:Date ,

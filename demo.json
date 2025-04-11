@@ -1,121 +1,112 @@
 {
-    "id": "evt_1P4pnFF7DMF7Cu0mHjYdQq78",
-    "object": "event",
-    "api_version": "2023-10-16",
-    "created": 1712950189,
-    "data": {
-      "object": {
-        "id": "cs_test_a1zaEypmuXqajfaxEU6BKocw2BADTgwTeGlYmx9BWMFG9f0V2b91v4U28t",
-        "object": "checkout.session",
-        "after_expiration": null,
-        "allow_promotion_codes": null,
-        "amount_subtotal": 150000,
-        "amount_total": 150000,
-        "automatic_tax": {
-          "enabled": false,
-          "liability": null,
-          "status": null
-        },
-        "billing_address_collection": null,
-        "cancel_url": "http://localhost:3000/cancel",
-        "client_reference_id": "66128fc53d2400c68caf0d9b",
-        "client_secret": null,
-        "consent": null,
-        "consent_collection": null,
-        "created": 1712950159,
-        "currency": "egp",
-        "currency_conversion": null,
-        "custom_fields": [
-        ],
-        "custom_text": {
-          "after_submit": null,
-          "shipping_address": null,
-          "submit": null,
-          "terms_of_service_acceptance": null
-        },
-        "customer": null,
-        "customer_creation": "if_required",
-        "customer_details": {
-          "address": {
-            "city": null,
-            "country": "EG",
-            "line1": null,
-            "line2": null,
-            "postal_code": null,
-            "state": null
-          },
-          "email": "ah1691977@gmail.com",
-          "name": "Ahmed",
-          "phone": null,
-          "tax_exempt": "none",
-          "tax_ids": [
-          ]
-        },
-        "customer_email": "ah1691977@gmail.com",
-        "expires_at": 1713036559,
-        "invoice": null,
-        "invoice_creation": {
-          "enabled": false,
-          "invoice_data": {
-            "account_tax_ids": null,
-            "custom_fields": null,
-            "description": null,
-            "footer": null,
-            "issuer": null,
-            "metadata": {
-            },
-            "rendering_options": null
-          }
-        },
-        "livemode": false,
-        "locale": null,
-        "metadata": {
-          "street": "shiba",
-          "city": "zag",
-          "phone": "01003241993"
-        },
-        "mode": "payment",
-        "payment_intent": "pi_3P4pnDF7DMF7Cu0m2WRiM1l3",
-        "payment_link": null,
-        "payment_method_collection": "if_required",
-        "payment_method_configuration_details": null,
-        "payment_method_options": {
-          "card": {
-            "request_three_d_secure": "automatic"
-          }
-        },
-        "payment_method_types": [
-          "card"
-        ],
-        "payment_status": "paid",
-        "phone_number_collection": {
-          "enabled": false
-        },
-        "recovered_from": null,
-        "setup_intent": null,
-        "shipping_address_collection": null,
-        "shipping_cost": null,
-        "shipping_details": null,
-        "shipping_options": [
-        ],
-        "status": "complete",
-        "submit_type": null,
-        "subscription": null,
-        "success_url": "http://localhost:3000/success",
-        "total_details": {
-          "amount_discount": 0,
-          "amount_shipping": 0,
-          "amount_tax": 0
-        },
-        "ui_mode": "hosted",
-        "url": null
-      }
-    },
-    "livemode": false,
-    "pending_webhooks": 3,
-    "request": {
-      "id": null,
-      "idempotency_key": null
-    },
-    "type": "checkout.session.completed"
-  }
+  "id": "cs_test_a15M3aH4hxnotFEgt6O4Zkg1j9RaObT5A8jcP7bw84fBtIJoAO6su1Ogjj",
+  "object": "checkout.session",
+  "adaptive_pricing": {
+    "enabled": false
+  },
+  "after_expiration": null,
+  "allow_promotion_codes": null,
+  "amount_subtotal": 15000,
+  "amount_total": 15000,
+  "automatic_tax": {
+    "enabled": false,
+    "liability": null,
+    "status": null
+  },
+  "billing_address_collection": null,
+  "cancel_url": "https://final-pro-api-j1v7.onrender.com/api/v1/cours",
+  "client_reference_id": "67f86d25cfe4ffa8405315fa",
+  "client_secret": null,
+  "collected_information": {
+    "shipping_details": null
+  },
+  "consent": null,
+  "consent_collection": null,
+  "created": 1744337316,
+  "currency": "egp",
+  "currency_conversion": null,
+  "custom_fields": [
+  ],
+  "custom_text": {
+    "after_submit": null,
+    "shipping_address": null,
+    "submit": null,
+    "terms_of_service_acceptance": null
+  },
+  "customer": null,
+  "customer_creation": "if_required",
+  "customer_details": {
+    "address": null,
+    "email": "ahmedhossam1691977@gmail.com",
+    "name": null,
+    "phone": null,
+    "tax_exempt": "none",
+    "tax_ids": null
+  },
+  "customer_email": "ahmedhossam1691977@gmail.com",
+  "discounts": [
+  ],
+  "expires_at": 1744423716,
+  "invoice": null,
+  "invoice_creation": {
+    "enabled": false,
+    "invoice_data": {
+      "account_tax_ids": null,
+      "custom_fields": null,
+      "description": null,
+      "footer": null,
+      "issuer": null,
+      "metadata": {
+      },
+      "rendering_options": null
+    }
+  },
+  "livemode": false,
+  "locale": null,
+  "metadata": {
+    "coursId": "67f86d25cfe4ffa8405315fa",
+    "userId": "67f70ff1ecc3cec8caf6f19f"
+  },
+  "mode": "payment",
+  "payment_intent": null,
+  "payment_link": null,
+  "payment_method_collection": "if_required",
+  "payment_method_configuration_details": {
+    "id": "pmc_1RCW9RF7DMF7Cu0mHPcKpfU3",
+    "parent": null
+  },
+  "payment_method_options": {
+    "card": {
+      "request_three_d_secure": "automatic"
+    }
+  },
+  "payment_method_types": [
+    "card",
+    "link"
+  ],
+  "payment_status": "unpaid",
+  "permissions": null,
+  "phone_number_collection": {
+    "enabled": false
+  },
+  "recovered_from": null,
+  "saved_payment_method_options": null,
+  "setup_intent": null,
+  "shipping_address_collection": null,
+  "shipping_cost": null,
+  "shipping_details": null,
+  "shipping_options": [
+  ],
+  "status": "open",
+  "submit_type": null,
+  "subscription": null,
+  "success_url": "https://final-pro-api-j1v7.onrender.com/api/v1/cours/67f86d25cfe4ffa8405315fa",
+  "total_details": {
+    "amount_discount": 0,
+    "amount_shipping": 0,
+    "amount_tax": 0
+  },
+  "ui_mode": "hosted",
+  "url": "https://checkout.stripe.com/c/pay/cs_test_a15M3aH4hxnotFEgt6O4Zkg1j9RaObT5A8jcP7bw84fBtIJoAO6su1Ogjj#fidkdWxOYHwnPyd1blpxYHZxWjA0VTdpaWBDMkFIQzJGcDVoSmRcPVBMZEY9cVxHUmdUfTFGVk9zUE43PXxTPDxnR0NcaDNPR0BxXTNwVFI9TUpIf2FVY3dfYWNqSmIzfHdsNjBdf1JXT0pqNTUzNTBobVRNaycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl",
+  "wallet_options": null
+}
