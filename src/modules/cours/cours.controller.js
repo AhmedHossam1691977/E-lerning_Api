@@ -122,30 +122,7 @@ const createChickOutSession = catchError(async (req, res, next) => {
   
 
 
-const creatOnlineCours = catchError( (req, res) => {
 
-    const sig = req.headers['stripe-signature'];
-
-  let event;
-
-  try {
-    event = stripe.webhooks.constructEvent(req.body, sig, "whsec_WOgOgQFq3GWA4kZc50ZGdjqw8HpC4IO6");
-  } catch (err) {
-    res.status(400).send(`Webhook Error: ${err.message}`);
-    return;
-  }
-
-  if(event.type ==='checkout.session.completed'){
-     const checkoutSessionCompleted = event.data.object;
-     console.log("success",checkoutSessionCompleted);
-     
-  }else{
-    console.log(`Unhandled event type ${event.type}`);
-  }
-  res.json( { message:"succes" });
-
-      }
-  );
 
 export{
     addCours,
@@ -154,24 +131,24 @@ export{
     updateCours,
     deleteCours,
     createChickOutSession,
-    creatOnlineCours,
-}
-
-
-async function corsss(e) {
-
-    const cours = await coursesModel.findById(e.client_reference_id);
-    if (!cours) return res.status(400).json({ message: "cours not found" });
-    cours.payPy = e.customer_email;
     
-   cours.save()
-
-    const user = await userModel.findById(e.metadata.userId);
-    if (!user) return res.status(400).json({ message: "user not found" });
-
-    user.corses = e.client_reference_id
-
-    user.save()
-
-    return next()
 }
+
+
+// async function corsss(e) {
+
+//     const cours = await coursesModel.findById(e.client_reference_id);
+//     if (!cours) return res.status(400).json({ message: "cours not found" });
+//     cours.payPy = e.customer_email;
+    
+//    cours.save()
+
+//     const user = await userModel.findById(e.metadata.userId);
+//     if (!user) return res.status(400).json({ message: "user not found" });
+
+//     user.corses = e.client_reference_id
+
+//     user.save()
+
+//     return next()
+// }

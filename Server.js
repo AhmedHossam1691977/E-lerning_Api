@@ -13,7 +13,7 @@ import { AppError } from "./src/utils/appError.js";
 import { globalError } from "./src/middleware/globalError.js";
 
 import dotenv from "dotenv" //this module use in cover for the secret key
-import { creatOnlineCours } from './src/modules/cours/cours.controller.js';
+// import { creatOnlineCours } from './src/modules/cours/cours.controller.js';
 
 
 
@@ -21,7 +21,29 @@ const app = express()
 const port =3000
 dotenv.config()
 app.use(bodyParser.json());
-app.post('/webhook', express.raw({type: 'application/json'}), creatOnlineCours);
+app.post('/webhook', express.raw({type: 'application/json'}),(req, res) => {
+
+    const sig = req.headers['stripe-signature'];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, "whsec_WOgOgQFq3GWA4kZc50ZGdjqw8HpC4IO6");
+  } catch (err) {
+    res.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+
+  if(event.type ==='checkout.session.completed'){
+     const checkoutSessionCompleted = event.data.object;
+     console.log("success",checkoutSessionCompleted);
+     
+  }else{
+    console.log(`Unhandled event type ${event.type}`);
+  }
+  res.json( { message:"succes" });
+
+      });
 
 app.use(cors())
 app.use(express.json())
