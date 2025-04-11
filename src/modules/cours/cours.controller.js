@@ -123,28 +123,27 @@ const createChickOutSession = catchError(async (req, res, next) => {
 
 
 const creatOnlineCours = catchError( (request, response) => {
+
     const sig = request.headers['stripe-signature'];
 
-    let event;
+  let event;
 
-    try {
-        event = stripe.webhooks.constructEvent(request.body, sig, "whsec_d3Z9Ws5i9u7xVeqRi5pMoM3PcBUSpIsO");
-    } catch (err) {
-        response.status(400).send(`Webhook Error: ${err.message}`);
-        return;
-    }
+  try {
+    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+  } catch (err) {
+    response.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
 
-    // Handle the event
-    if(event.type ==='checkout.session.completed'){
-        const checkoutSessionCompleted = event.data.object;
-        // card(checkoutSessionCompleted)
-        console.log("success",event.data.object);
-    }else{
-        console.log(`Unhandled event type ${event.type}`);
-    }
+  if(event.type ==='checkout.session.completed'){
+     const checkoutSessionCompleted = event.data.object;
+     console.log("success",checkoutSessionCompleted);
+     
+  }else{
+    console.log(`Unhandled event type ${event.type}`);
+  }
+  response.json( { message:"succes" });
 
-    response.json( { message:"succes" });
-       
       }
   );
 
