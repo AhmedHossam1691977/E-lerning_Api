@@ -128,7 +128,7 @@ const createChickOutSession = catchError(async (req, res, next) => {
     let event;
   
     try {
-      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+      event = stripe.webhooks.constructEvent(req.body, sig, "whsec_WOgOgQFq3GWA4kZc50ZGdjqw8HpC4IO6");
     } catch (err) {
       console.error('Webhook signature verification failed.', err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
