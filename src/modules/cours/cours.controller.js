@@ -106,8 +106,8 @@ const createChickOutSession = catchError(async (req, res, next) => {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${process.env.BASE_URL}/api/v1/cours/${cours._id}`,
-      cancel_url: `${process.env.BASE_URL}/api/v1/cours`,
+      success_url: `https://final-pro-api-j1v7.onrender.com/api/v1/cours/${cours._id}`,
+      cancel_url: `https://final-pro-api-j1v7.onrender.com/api/v1/cours`,
       customer_email: req.user.email,
       client_reference_id: cours._id.toString(),
       metadata: {
