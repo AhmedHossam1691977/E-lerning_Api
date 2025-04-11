@@ -23,8 +23,8 @@ const app = express()
 const port =3000
 dotenv.config()
 app.use(bodyParser.json());
-app.use(express.raw({type: 'application/json'}))
-app.post('/webhook',onlineCorsss);
+// app.use(express.raw({type: 'application/json'}))
+app.post('/webhook',express.raw({type: 'application/json'}),onlineCorsss);
 
 app.use(cors())
 app.use(express.json())
