@@ -15,30 +15,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 
-app.post('/webhook', bodyParser.raw({ type: 'application/json' }), (req, res) => {
-  const sig = req.headers['stripe-signature'];
-
-  let event;
-
-  try {
-      event = Stripe.webhooks.constructEvent(req.body, sig, "whsec_nsttgrnDILHoYGv069mh7iXf20ZlFwaU");
-  } catch (err) {
-      res.status(400).send(`Webhook Error: ${err.message}`);
-      return;
-  }
-
-  // Handle the event
-  if(event.type ==='checkout.session.completed'){
-      const checkoutSessionCompleted = event.data.object;
-     
-      console.log("success",checkoutSessionCompleted);
-  }else{
-      console.log(`Unhandled event type ${event.type}`);
-  }
-
-  res.json( { message:"succes" });
-
-});
+app.post('/webhook', bodyParser.raw({ type: 'application/json' }), onlineCorsss);
 
 
 app.use(express.json());

@@ -125,16 +125,16 @@ const createChickOutSession = catchError(async (req, res, next) => {
 
   const onlineCorsss = catchError((req, res) => {
     const sig = req.headers['stripe-signature'];
-
+  
     let event;
-
+  
     try {
-        event = stripe.webhooks.constructEvent(req.body, sig, "whsec_voC4fe3vHk8cKuNEwS2z9MKIMIqZPauW");
+        event = Stripe.webhooks.constructEvent(req.body, sig, "whsec_nsttgrnDILHoYGv069mh7iXf20ZlFwaU");
     } catch (err) {
         res.status(400).send(`Webhook Error: ${err.message}`);
         return;
     }
-
+  
     // Handle the event
     if(event.type ==='checkout.session.completed'){
         const checkoutSessionCompleted = event.data.object;
@@ -143,10 +143,10 @@ const createChickOutSession = catchError(async (req, res, next) => {
     }else{
         console.log(`Unhandled event type ${event.type}`);
     }
-
-    res.json( { message:"succes" });
-
-})
+  
+    // res.json( { message:"succes" });
+  
+  })
 
 
 
