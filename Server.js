@@ -13,6 +13,7 @@ import { AppError } from "./src/utils/appError.js";
 import { globalError } from "./src/middleware/globalError.js";
 
 import dotenv from "dotenv" //this module use in cover for the secret key
+import Stripe from 'stripe';
 // import { creatOnlineCours } from './src/modules/cours/cours.controller.js';
 
 
@@ -21,14 +22,15 @@ const app = express()
 const port =3000
 dotenv.config()
 app.use(bodyParser.json());
-app.post('/webhook', express.raw({type: 'application/json'}),(req, res) => {
+app.use(express.raw({type: 'application/json'}))
+app.post('/webhook',(req, res) => {
 
     const sig = req.headers['stripe-signature'];
 
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, "whsec_WOgOgQFq3GWA4kZc50ZGdjqw8HpC4IO6");
+    event = Stripe.webhooks.constructEvent(req.body, sig, "whsec_WOgOgQFq3GWA4kZc50ZGdjqw8HpC4IO6");
   } catch (err) {
     res.status(400).send(`Webhook Error: ${err.message}`);
     return;
