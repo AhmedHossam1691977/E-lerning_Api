@@ -148,7 +148,7 @@ const createChickOutSession = catchError(async (req, res, next) => {
         console.log(`Unhandled event type ${event.type}`);
     }
   
-    res.json( { message:"succes" ,event:event.data.object});
+    res.json( { message:"succes" ,event:event.data.object ,eventType:event.type});
   
   })
 
