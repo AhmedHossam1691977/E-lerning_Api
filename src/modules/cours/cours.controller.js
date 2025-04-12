@@ -169,7 +169,7 @@ async function corsss(e) {
 
     const cours = await coursesModel.findById(e.client_reference_id);
     if (!cours) return res.status(400).json({ message: "cours not found" });
-    cours.payPy = e.customer_email;
+    cours.payPy = e.metadata.userId;
     cours.isPay=true;
     cours.paidAt = Date.now();
    cours.save()
