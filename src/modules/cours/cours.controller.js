@@ -167,20 +167,21 @@ export{
 }
 
 
-async function corsss(e) {
+ function corsss(e) {
 
-    const cours = await coursesModel.findById(e.client_reference_id);
-    if (!cours) return res.status(400).json({ message: "cours not found" });
-    cours.payPy = e.customer_email;
+     console.log(e);
+//     const cours = await coursesModel.findById(e.client_reference_id);
+//     if (!cours) return res.status(400).json({ message: "cours not found" });
+//     cours.payPy = e.customer_email;
     
-   cours.save()
+//    cours.save()
 
-    const user = await userModel.findById(e.metadata.userId);
-    if (!user) return res.status(400).json({ message: "user not found" });
+//     const user = await userModel.findById(e.metadata.userId);
+//     if (!user) return res.status(400).json({ message: "user not found" });
 
-    user.corses = e.client_reference_id
+//     user.corses = e.client_reference_id
 
-    user.save()
+//     user.save()
 
-return next(new  AppError('order not found',404))
+// return next(new  AppError('order not found',404))
 }
