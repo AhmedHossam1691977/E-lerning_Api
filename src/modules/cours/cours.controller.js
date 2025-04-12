@@ -141,7 +141,6 @@ const createChickOutSession = catchError(async (req, res, next) => {
     }
     // Handle the event
     if(event.type ==='checkout.session.completed'){
-        const checkoutSessionCompleted = event.data.object;
         corsss(event.data.object)
         console.log("success",checkoutSessionCompleted);
     }else{
@@ -167,21 +166,21 @@ export{
 }
 
 
- function corsss(e) {
+async function corsss(e) {
 
-     console.log(e);
-//     const cours = await coursesModel.findById(e.client_reference_id);
-//     if (!cours) return res.status(400).json({ message: "cours not found" });
-//     cours.payPy = e.customer_email;
-    
-//    cours.save()
+    const cours = await coursesModel.findById(e.client_reference_id);
+    if (!cours) return res.status(400).json({ message: "cours not found" });
+    cours.payPy = e.customer_email;
+    cours.isPay=true;
+    cours.paidAt = Date.now();
+   cours.save()
 
-//     const user = await userModel.findById(e.metadata.userId);
-//     if (!user) return res.status(400).json({ message: "user not found" });
+    const user = await userModel.findById(e.metadata.userId);
+    if (!user) return res.status(400).json({ message: "user not found" });
 
-//     user.corses = e.client_reference_id
+    user.corses = e.client_reference_id
 
-//     user.save()
+    user.save()
 
-// return next(new  AppError('order not found',404))
+return next(new  AppError('order not found',404))
 }
