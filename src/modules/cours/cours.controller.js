@@ -166,11 +166,29 @@ export{
 
 async function corsss(e) {
   try {
-      // 1. تحديث الكورس بإضافة المشتري الجديد
-      const cours = await coursesModel.findByIdAndUpdate(
+      // 1. التحقق من وجود الكورس أولاً
+      const cours = await coursesModel.findById(e.metadata.coursId);
+      if (!cours) {
+          return res.status(400).json({ message: "Course not found" });
+      }
+
+      // 2. التحقق من وجود المستخدم أولاً
+      const user = await userModel.findById(e.metadata.userId);
+      if (!user) {
+          return res.status(400).json({ message: "User not found" });
+      }
+
+      // 3. التحقق إذا كان المستخدم قد اشترى الكورس مسبقاً
+      const alreadyPurchased = cours.payPy.includes(e.metadata.userId);
+      if (alreadyPurchased) {
+          return res.status(400).json({ message: "User already purchased this course" });
+      }
+
+      // 4. تحديث الكورس بإضافة المشتري الجديد (بدون تكرار)
+      const updatedCourse = await coursesModel.findByIdAndUpdate(
           e.metadata.coursId,
           {
-              $push: { payPy: e.metadata.userId }, // يضيف المستخدم الجديد للمصفوفة
+              $addToSet: { payPy: e.metadata.userId }, // يضيف المستخدم فقط إذا لم يكن موجوداً
               $set: { 
                   isPay: true, 
                   paidAt: Date.now() 
@@ -180,28 +198,20 @@ async function corsss(e) {
           { new: true }
       );
 
-      if (!cours) {
-          return res.status(400).json({ message: "Course not found" });
-      }
-
-      // 2. تحديث المستخدم بإضافة الكورس
-      const user = await userModel.findByIdAndUpdate(
+      // 5. تحديث المستخدم بإضافة الكورس (بدون تكرار)
+      const updatedUser = await userModel.findByIdAndUpdate(
           e.metadata.userId,
           {
-              $push: { corses: e.client_reference_id } // يضيف الكورس لمصفوفة كورسات المستخدم
+              $addToSet: { corses: e.client_reference_id }
           },
           { new: true }
       );
 
-      if (!user) {
-          return res.status(400).json({ message: "User not found" });
-      }
-
-      // 3. إرجاع النتيجة النهائية
+      // 6. إرجاع النتيجة النهائية
       return res.status(200).json({ 
           message: "تم تسجيل الشراء بنجاح",
-          course: cours,
-          user: user
+          course: updatedCourse,
+          user: updatedUser
       });
 
   } catch (error) {
