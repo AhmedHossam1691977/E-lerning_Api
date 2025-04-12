@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt';
 
 const schema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
-        required:true,
+        required: true,
         minLength: [1, 'too short courses name']
     },
     slug: {
@@ -13,54 +13,43 @@ const schema = new mongoose.Schema({
         lowercase: true,
         required: true
     },
-    description:{
-        type:String,
+    description: {
+        type: String,
     },
-    image:String,
-    dateOfCours:Date ,
-    isPay:{
-        type:Boolean,
-        default:false
+    image: String,
+    dateOfCours: Date,
+    isPay: {
+        type: Boolean,
+        default: false
     },
-    payPy:{
+    payPy: [{
         type: mongoose.Types.ObjectId,
-        ref:"user",
+        ref: "user",
+    }],
+    price: {
+        type: Number,
+        min: 0,
     },
-    price:{
-        type:Number,
-        min:0,
-        },
-        userAddress:{
-            street:String,
-            city:String,
-            phone:String
-        },
-        numberOfPayed:{
-            type:Number,
-            min:0,
-            },
+    userAddress: {
+        street: String,
+        city: String,
+        phone: String
+    },
+    numberOfPayed: {
+        type: Number,
+        min: 0,
+    },
+}, { timestamps: true, toJSON: { virtuals: true } });
 
-}, { timestamps: true , toJSON:{virtuals:true} })
+// virtual populate for All weeks in the course
+schema.virtual('allWeeks', {
+    ref: 'week',
+    localField: "_id",
+    foreignField: 'coursId'
+});
 
+schema.pre("findOne", function() {
+    this.populate('allWeeks').populate('payPy', 'name email'); // يمكنك إضافة حقول إضافية تحتاجها
+});
 
-
-
-
-// virtual populate for All review in the product 
-schema.virtual('allWeeks',{
-    ref:'week',
-    localField:"_id",
-    foreignField:'coursId'
-})
-
-schema.pre("findOne",function(){
-
-    this.populate('allWeeks')
-    
-})
-
-
-export const coursesModel = mongoose.model('cours', schema)
-
-
-
+export const coursesModel = mongoose.model('cours', schema);
