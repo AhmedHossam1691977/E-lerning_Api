@@ -164,22 +164,48 @@ export{
     onlineCorsss
 }
 
-
 async function corsss(e) {
+  try {
+      // 1. تحديث الكورس بإضافة المشتري الجديد
+      const cours = await coursesModel.findByIdAndUpdate(
+          e.metadata.coursId,
+          {
+              $push: { payPy: e.metadata.userId }, // يضيف المستخدم الجديد للمصفوفة
+              $set: { 
+                  isPay: true, 
+                  paidAt: Date.now() 
+              },
+              $inc: { numberOfPayed: 1 }
+          },
+          { new: true }
+      );
 
-    const cours = await coursesModel.findById(e.client_reference_id);
-    if (!cours) return res.status(400).json({ message: "cours not found" });
-    cours.payPy = e.metadata.userId;
-    cours.isPay=true;
-    cours.paidAt = Date.now();
-   cours.save()
+      if (!cours) {
+          return res.status(400).json({ message: "Course not found" });
+      }
 
-    const user = await userModel.findById(e.metadata.userId);
-    if (!user) return res.status(400).json({ message: "user not found" });
+      // 2. تحديث المستخدم بإضافة الكورس
+      const user = await userModel.findByIdAndUpdate(
+          e.metadata.userId,
+          {
+              $push: { corses: e.client_reference_id } // يضيف الكورس لمصفوفة كورسات المستخدم
+          },
+          { new: true }
+      );
 
-    user.corses = e.client_reference_id
+      if (!user) {
+          return res.status(400).json({ message: "User not found" });
+      }
 
-    user.save()
+      // 3. إرجاع النتيجة النهائية
+      return res.status(200).json({ 
+          message: "تم تسجيل الشراء بنجاح",
+          course: cours,
+          user: user
+      });
 
-return next(new  AppError('order not found',404))
+  } catch (error) {
+      console.error("Error in corsss:", error);
+      return next(new AppError('حدث خطأ أثناء معالجة الشراء', 500));
+  }
 }
