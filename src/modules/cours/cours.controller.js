@@ -142,7 +142,6 @@ const createChickOutSession = catchError(async (req, res, next) => {
     // Handle the event
     if(event.type ==='checkout.session.completed'){
         corsss(event.data.object)
-        console.log("success",checkoutSessionCompleted);
     }else{
         console.log(`Unhandled event type ${event.type}`);
     }
