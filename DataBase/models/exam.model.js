@@ -31,6 +31,15 @@ const examSchema = new mongoose.Schema({
     type:mongoose.Types.ObjectId,
     ref:"week"
 },
+ lessonId: {
+                type:mongoose.Types.ObjectId,
+                ref:"lesson"
+            },
+            courseId: {
+                type:mongoose.Types.ObjectId,
+                ref:"cours"
+            },
+
 }, { timestamps: true });
 
 

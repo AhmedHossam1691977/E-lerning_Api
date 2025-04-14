@@ -40,14 +40,6 @@ const schema = new mongoose.Schema({
         lowercase:true
     },
     passwordChangedAt:Date,
-//     addresses: [
-//         {  
-//             stret:String,
-//             phone:String,
-//             city:String,
-//         }
-        
-// ],
 passwordResetToken:String,
 resetCode:String,
 passwordResetTokenEsxpire:Date ,
@@ -56,7 +48,13 @@ corses:[
         type:mongoose.Types.ObjectId,
         ref:"cours"
     }
-]
+],
+ExamScore: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "ExamScore"
+    }
+  ]
 
 }, { timestamps: true ,toJSON:{virtuals:true} })
 

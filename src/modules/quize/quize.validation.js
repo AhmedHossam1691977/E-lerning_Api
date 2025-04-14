@@ -10,8 +10,9 @@ const quzeVal =Joi.object({
         } )
     ).required(),
     durationInMinutes: Joi.number().integer().min(1).required(),
-    weekId: Joi.string().hex().length(24).required()
-
+    weekId: Joi.string().hex().length(24).required(),
+    courseId: Joi.string().hex().length(24).required(),
+    lessonId: Joi.string().hex().length(24).required(),
 })
 
 const paramsIdVal =Joi.object({

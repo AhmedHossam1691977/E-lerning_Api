@@ -4,21 +4,31 @@ import { deleteOne } from "../handlers/handlers.js";
 import { impoetantQuestionModel } from "../../../DataBase/models/ImportantQuestions.model.js";
 
 
-const addquestion =catchError(async (req,res,next)=>{
+const addquestion = catchError(async (req, res, next) => {
+    const { questionText, lessonId } = req.body;
 
-    const nweQuastion = await impoetantQuestionModel.findOne({questionText:req.body.questionText})
-    if(nweQuastion){
-        return res.status(400).json({message:"quastion alredy found"})
-    }else{
-        req.body.slug=slugify(`${req.body.questionText}`);
+    // تحقق إذا كان هناك سؤال بنفس النص في نفس الدرس
+    const existingQuestion = await impoetantQuestionModel.findOne({
+        questionText: questionText,
+        lessonId: lessonId // نبحث في نفس الدرس فقط
+    });
 
-        const question = new impoetantQuestionModel(req.body)
-        question.createdAt=Date.now() + 10 * 60 * 1000
-        await  question.save()
-        res.json({message:"success",question:question})
+    if (existingQuestion) {
+        // إذا كان السؤال موجود في نفس الدرس، نعرض رسالة خطأ
+        return res.status(400).json({ message: "this question is already exist in this lesson" });
     }
 
-})
+    // إذا كان السؤال جديدًا أو ينتمي لدرس مختلف، نقوم بإضافته
+    req.body.slug = slugify(`${req.body.questionText}`); // إنشاء slug
+
+    // إنشاء السؤال
+    const question = new impoetantQuestionModel(req.body);
+    question.createdAt = Date.now() + 10 * 60 * 1000; // تحديد الوقت
+    await question.save(); // حفظ السؤال
+
+    // إرسال الاستجابة
+    res.json({ message: "success", question: question });
+});
 
 
 const getAllQuestion =catchError(async (req,res,next)=>{
@@ -30,14 +40,26 @@ const getAllQuestion =catchError(async (req,res,next)=>{
 
 
 
-const getSinglQuestion =catchError(async (req,res,next)=>{
+const getSinglQuestionOfLeson = catchError(async (req, res, next) => {
 
-    let question =await impoetantQuestionModel.findById(req.params.id) 
-    !question && res.status(400).json({message:"question not found"})
-    question && res.json({message:"success",question})
+        const question = await impoetantQuestionModel.find({lessonId:req.params.id});
+        
+    if (!question) {return res.status(400).json({ message: "question not found" })}
 
+    res.json({ message: "success" ,numberOfQuestion:question.length ,question: question   });
+});
+
+
+const getSinglQuestionOfWeek = catchError(async (req, res, next) => {
+
+    const question = await impoetantQuestionModel.find({weekId:req.params.id});
     
-})
+if (!question) {return res.status(400).json({ message: "question not found" })}
+
+res.json({ message: "success" ,numberOfQuestion:question.length ,question: question   });
+});
+
+
 
 const updateQuestion =catchError(async(req,res,next)=>{ 
     if(req.body.name) req.body.slug=slugify(req.body.name)
@@ -56,7 +78,8 @@ const deleteQuestion =deleteOne(impoetantQuestionModel)
 export{
     addquestion,
     getAllQuestion,
-    getSinglQuestion,
+    getSinglQuestionOfLeson,
     updateQuestion,
-    deleteQuestion
+    deleteQuestion,
+    getSinglQuestionOfWeek
 }

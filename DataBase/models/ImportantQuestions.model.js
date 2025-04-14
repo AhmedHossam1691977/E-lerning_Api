@@ -33,7 +33,10 @@ const schema = new mongoose.Schema({
                 type:mongoose.Types.ObjectId,
                 ref:"lesson"
             },
-
+            courseId: {
+                type:mongoose.Types.ObjectId,
+                ref:"cours"
+            },
 
 }, { timestamps: true, toJSON:{virtuals:true} })
 

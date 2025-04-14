@@ -2,6 +2,7 @@ import slugify from "slugify"
 import { catchError } from "../../middleware/catchError.js";
 import { deleteOne } from "../handlers/handlers.js";
 import { weekModel } from "../../../DataBase/models/week.model.js";
+import { coursesModel } from "../../../DataBase/models/courses.model.js";
 
 
 const addWeek =catchError(async (req,res,next)=>{
@@ -9,14 +10,15 @@ const addWeek =catchError(async (req,res,next)=>{
     const nweWeek = await weekModel.findOne({title:req.body.title})
     if(nweWeek){
         return res.status(400).json({message:"week alredy found"})
-    }else{
+    }
             req.body.slug=slugify(`${req.body.title}`);
-
+        const cours = await coursesModel.findById(req.body.coursId)
+        if(!cours){return res.status(400).json({message:"cours not found"})}
     const week = new weekModel(req.body)
     week.dateOfWeek=Date.now() + 10 * 60 * 1000
     await  week.save()
     res.json({message:"success",week:week})
-    }
+    
 
 })
 
