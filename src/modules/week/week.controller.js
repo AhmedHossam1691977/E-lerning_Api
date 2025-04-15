@@ -3,6 +3,7 @@ import { catchError } from "../../middleware/catchError.js";
 import { deleteOne } from "../handlers/handlers.js";
 import { weekModel } from "../../../DataBase/models/week.model.js";
 import { coursesModel } from "../../../DataBase/models/courses.model.js";
+import { userModel } from "../../../DataBase/models/user.model.js";
 
 
 const addWeek =catchError(async (req,res,next)=>{
@@ -32,14 +33,28 @@ const getallWeek =catchError(async (req,res,next)=>{
 
 
 
-const getSinglWeek =catchError(async (req,res,next)=>{
+const getSinglWeek = catchError(async (req, res, next) => {
+    const week = await weekModel.findById(req.params.id);
+    if (!week) {
+        return res.status(400).json({ message: "week not found" });
+    }
 
-    let week =await weekModel.findById(req.params.id) 
-    !week && res.status(400).json({message:"week not found"})
-    week && res.json({message:"success",week})
+    const user = await userModel.findById(req.user._id);
 
+
+    // تأكد من إن user.courses فعلاً بتحتوي على courseId
+    const isEnrolled = user.corses.includes(week.coursId.toString());
+
+    console.log();
     
-})
+
+    if (!isEnrolled) {
+        return res.status(403).json({ message: "Sorry, you are not enrolled in this course." });
+    }
+
+    res.status(200).json({ message: "success", week });
+});
+
 
 const updateWeek =catchError(async(req,res,next)=>{ 
     if(req.body.name) req.body.slug=slugify(req.body.name);

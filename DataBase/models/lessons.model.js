@@ -27,10 +27,21 @@ const schema = new mongoose.Schema({
     dateOflesson:Date
 
 
-}, { timestamps: true })
+}, { timestamps: true ,toJSON:{virtuals:true}})
 
 
 
+schema.virtual('qustation',{
+    ref:'impoetantQuestion',
+    localField:"_id",
+    foreignField:'lessonId'
+})
+
+schema.pre("findOne",function(){
+
+    this.populate('qustation')
+    
+})
 
 
 

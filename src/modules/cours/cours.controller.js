@@ -54,16 +54,42 @@ const getallCours =catchError(async (req,res,next)=>{
 })
 
 
-
-
 const getSinglCoures =catchError(async (req,res,next)=>{
 
     let cours =await coursesModel.findById(req.params.id) 
     !cours && res.status(400).json({message:"cours not found"})
+
+  console.log(cours._id);
+  
+    const user = await userModel.findById(req.user._id);
+    const hasPurchased = user.corses.includes(cours._id);
+
+    if (!hasPurchased) {
+        return res.status(403).json({ message: "You are not authorized to view this course" });
+    }
+
+
+
     cours && res.json({message:"success",cours})
 
     
 })
+
+
+const getMyCourses = catchError(async (req, res, next) => {
+  const user = req.user
+console.log(user);
+
+  // نجيب الكورسات اللي المستخدم شاريها
+  const courses = await coursesModel.find({
+      _id: { $in: user.corses }
+  });
+
+  res.json({ message: "success", myCourses:courses });
+});
+
+
+
 
 const updateCours =catchError(async(req,res,next)=>{ 
     if(req.body.name) req.body.slug=slugify(req.body.name);
@@ -161,7 +187,8 @@ export{
     updateCours,
     deleteCours,
     createChickOutSession,
-    onlineCorsss
+    onlineCorsss,
+    getMyCourses
 }
 
 async function corsss(e) {

@@ -5,6 +5,7 @@ import { deleteOne } from "../handlers/handlers.js";
 import { lessonModel } from "../../../DataBase/models/lessons.model.js";
 import { uploadToFTP } from "../../services/ftb.js";
 import path from "path";
+import { userModel } from "../../../DataBase/models/user.model.js";
 
 
 const addLesson = catchError(async (req, res, next) => {
@@ -49,9 +50,20 @@ const getallLesson =catchError(async (req,res,next)=>{
 
 const getSinglLesson =catchError(async (req,res,next)=>{
 
-    let cours =await lessonModel.findById(req.params.id) 
-    !cours && res.status(400).json({message:"cours not found"})
-    cours && res.json({message:"success",lesson})
+    let lesson =await lessonModel.findById(req.params.id) 
+    !lesson && res.status(400).json({message:"cours not found"})
+    
+    const user = await userModel.findById(req.user._id);
+    
+    
+        
+        const isEnrolled = user.corses.includes(lesson.coursId.toString());
+        if (!isEnrolled) {
+            return res.status(403).json({ message: "Sorry, you are not enrolled in this course." });
+        }
+    
+    
+    lesson && res.json({message:"success",lesson})
 
     
 })

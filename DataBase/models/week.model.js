@@ -43,17 +43,17 @@ schema.pre("findOne",function(){
 
 
 
-schema.virtual('qustation',{
-    ref:'impoetantQuestion',
-    localField:"_id",
-    foreignField:'weekId'
-})
+// schema.virtual('qustation',{
+//     ref:'impoetantQuestion',
+//     localField:"_id",
+//     foreignField:'weekId'
+// })
 
-schema.pre("findOne",function(){
+// schema.pre("findOne",function(){
 
-    this.populate('qustation')
+//     this.populate('qustation')
     
-})
+// })
 
 
 
