@@ -49,6 +49,27 @@ You can explore and test the API endpoints using **Postman** here:
 - **Middleware**: Input validation, error handling  
 - **Services**: Email notifications, FTP, Payment Gateway  
 
+
+## 🛠️ Technology Stack Overview
+
+This project is built with a modern, scalable, and secure technology stack:
+
+| **Category**        | **Technologies**                                                                 |
+|----------------------|----------------------------------------------------------------------------------|
+| **Framework**        | Node.js, Express.js                                                             |
+| **Language**         | JavaScript (ES6+)                                                               |
+| **Database**         | MongoDB with Mongoose ODM                                                       |
+| **Authentication**   | JWT (JSON Web Token), bcrypt (password hashing)                                 |
+| **Payments**         | Stripe / PayPal (integration ready)                                             |
+| **File Storage**     | Local Storage / S3-Compatible (AWS S3, Google Cloud Storage – optional)         |
+| **Emails**           | Nodemailer (SMTP) / SendGrid / Mailgun (optional)                               |
+| **Media Handling**   | Multer (file uploads), Cloud storage integration                                |
+| **Validation**       | Express Validator / Custom Middleware                                            |
+| **Deployment**       | Docker, Render, Heroku, AWS EC2, or any Node.js-supported cloud service         |
+| **Documentation**    | Postman API Docs                                                                |
+
+
+
 ---
 
 ## 📦 Installation & Setup
